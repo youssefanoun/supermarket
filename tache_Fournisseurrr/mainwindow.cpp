@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QtDebug>
 #include <QSqlRecord>
+#include <iostream>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -170,7 +171,6 @@ void MainWindow::on_pushButton_5_clicked()
 
 void MainWindow::on_pushButton_6_clicked()
 {
-
     commandes_achats ca(ui->lineEdit_11->text(),
                         ui->lineEdit_12->text(),
                         ui->lineEdit_13->text().toInt(),
@@ -194,13 +194,28 @@ void MainWindow::on_pushButton_7_clicked()
 
 void MainWindow::on_pushButton_8_clicked()
 {
+    QSqlQuery q;
+    QString ss =ui->lineEdit_11->text();
+    q.prepare("select * from cmdachat where refcmda = :id");
+    q.bindValue(":id", ss);
+    q.exec();
+   QSqlQueryModel * m = new QSqlQueryModel();
+   m->setQuery(q);
+   QSqlRecord rec;
+   rec = m->record(0);
+   if(rec.isEmpty() == false){
+   ui->lineEdit_12->setText(rec.value(1).toString());
+   ui->lineEdit_13->setText(rec.value(2).toString());
+   ui->lineEdit_14->setText(rec.value(3).toString());
+   }else{
+       std::cout << "efjkf" << std::endl;
+   }
 
 }
 
 void MainWindow::on_pushButton_3_clicked()
 {
-    ui->tabcmd->setModel(tmpcmd.afficher());//refresh
-
+    ui->tabcmd->setModel(tmpcmd.afficher());
 }
 
 void MainWindow::on_pushButton_9_clicked()
